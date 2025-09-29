@@ -9,10 +9,10 @@ load_dotenv()  # Load environment variables from .env file
 class OdooClient:
     def __init__(self):
         # Configuration from environment variables
-        self.url = os.getenv("ODOO_URL", "http://localhost:8069")
-        self.db = os.getenv("ODOO_DB", "odoo-mce")
-        self.username = os.getenv("ODOO_USERNAME", "admin")
-        self.password = os.getenv("ODOO_PASSWORD", "admin123")
+        self.url = os.getenv("ODOO_URL")
+        self.db = os.getenv("ODOO_DB")
+        self.username = os.getenv("ODOO_USERNAME")
+        self.password = os.getenv("ODOO_PASSWORD")
 
         # XML-RPC endpoints
         self.common = xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/common")
