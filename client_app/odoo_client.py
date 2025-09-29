@@ -66,7 +66,8 @@ class OdooClient:
         """Get a specific sale order"""
         fields = fields or ['name', 'partner_id',
                             'date_order', 'amount_total', 'state', 'order_line']
-        return self._execute('sale.order', 'read', [order_id], {'fields': fields})
+        # Fix: pass fields as a keyword argument, not as a dictionary
+        return self._execute('sale.order', 'read', [order_id], fields=fields)
 
     def confirm_sale_order(self, order_id):
         """Confirm a sale order"""
