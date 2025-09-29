@@ -1,0 +1,144 @@
+<odoo>
+	<template id="list_to_invoice_orders" name="Sales Orders To Invoice">
+		<t t-call="website.layout">
+			<div class="container mt-4">
+				<div class="row">
+					<div class="col-12">
+						<h1 class="mb-4">Sales Orders Ready for Invoice</h1>
+
+						<div class="card">
+							<div class="card-header bg-primary text-white">
+								<h5 class="mb-0">Orders with "To Invoice" Status</h5>
+							</div>
+							<div class="card-body">
+								<t t-if="orders">
+									<div class="table-responsive">
+										<table class="table table-striped table-hover">
+											<thead>
+												<tr>
+													<th>Order Reference</th>
+													<th>Customer</th>
+													<th>Order Date</th>
+													<th>Amount</th>
+													<th>Line Items</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<t t-foreach="orders" t-as="order">
+													<tr>
+														<td><t t-esc="order['name']"/></td>
+														<td><t t-esc="order['partner_name']"/></td>
+														<td><t t-esc="order['date_order']"/></td>
+														<td>
+															<t t-esc="order['currency']"/> <t t-esc="'%.2f' % order['amount_total']"/>
+														</td>
+														<td><t t-esc="order['order_line_count']"/></td>
+														<td>
+															<a t-att-href="'/external/sale-invoice?sale_id=%s&amp;partner_id=%s' % (order['id'], order['partner_id'])"
+															class="btn btn-sm btn-primary">
+																Request Invoice
+															</a>
+														</td>
+													</tr>
+												</t>
+											</tbody>
+										</table>
+									</div>
+								</t>
+								<t t-else="">
+									<div class="alert alert-info">
+										No sales orders found with "to invoice" status.
+									</div>
+								</t>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+
+	<template id="external_invoice_request_page" name="External Invoice Request">
+		<t t-call="website.layout">
+			<div class="container mt-4">
+				<div class="row">
+					<div class="col-12">
+						<h1 class="mb-4">Request an Invoice</h1>
+						<div id="external_invoice_form" class="card">
+							<div class="card-body">
+								<!-- Partner Information -->
+								<t t-if="data.get('partner') and data.get('partner').get('id')">
+									<h5 class="card-title mb-3">Partner Information</h5>
+									<div class="row mb-4">
+										<div class="col-md-6">
+											<p><strong>Name:</strong> <t t-esc="data.get('partner').get('name')"/></p>
+										</div>
+									</div>
+								</t>
+
+								<!-- Form Section -->
+								<div class="form-section">
+									<t t-if="not data.get('has_partner')">
+										<h5 class="card-title mb-3">Select Customer</h5>
+										<div class="form-group mb-4">
+											<label for="partnerSelect">Customer</label>
+											<select class="form-control" id="saleSelect">
+												<option value="">Select a sales order</option>
+												<t t-foreach="data.get('sales', [])" t-as="sale">
+													<option t-att-value="sale.get('id')" t-att-selected="sale.get('id') == data.get('preselected_sale_id')">
+														<t t-esc="sale.get('name')"/> -
+														<t t-esc="sale.get('date_order')"/>
+														(<t t-esc="sale.get('amount_total')"/>)
+													</option>
+												</t>
+											</select>
+										</div>
+									</t>
+
+									<h5 class="card-title mb-3">Select Sales Order</h5>
+									<div class="form-group mb-4">
+										<label for="saleSelect">Sales Orders Ready for Invoice</label>
+										<select class="form-control" id="saleSelect">
+											<option value="">Select a sales order</option>
+											<t t-foreach="data.get('sales', [])" t-as="sale">
+												<option t-att-value="sale.get('id')" t-att-selected="sale.get('id') == data.get('preselected_sale_id')">
+													<t t-esc="sale.get('name')"/> -
+													<t t-esc="sale.get('date_order')"/>
+													(<t t-esc="sale.get('amount_total')"/>)
+												</option>
+											</t>
+										</select>
+									</div>
+
+									<button id="submitRequestBtn" class="btn btn-primary">Request Invoice</button>
+								</div>
+
+								<!-- Result Section (initially hidden) -->
+								<div class="result-section d-none"></div>
+							</div>
+						</div>
+						<script type="text/javascript">
+							var invoiceRequestData = <t t-raw="data_json or '{}'"/>;
+						</script>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+
+	<template id="external_page_not_found" name="Invoice Request Not Found">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <h3>Page Not Found</h3>
+                            <p>The requested page is not valid or has expired.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
