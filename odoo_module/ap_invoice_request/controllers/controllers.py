@@ -1,6 +1,9 @@
 from odoo import http, _
 from odoo.http import request
 import json
+import io
+import base64
+from werkzeug.exceptions import NotFound
 
 
 class ExternalInvoiceController(http.Controller):
@@ -147,3 +150,33 @@ class ExternalInvoiceController(http.Controller):
             }
         except Exception as e:
             return {'error': str(e)}
+
+    @http.route(['/external/sale-invoice/download/<int:invoice_id>'], type='http', auth='public', website=True)
+    def download_invoice_pdf(self, invoice_id, **kwargs):
+        """
+        Download invoice PDF
+        """
+        # First check if it's a valid invoice_id
+        invoice = request.env['account.move'].sudo().browse(invoice_id)
+        if not invoice.exists():
+            return request.render('ap_invoice_request.external_page_not_found')
+
+        # Check if there's an invoice request for this invoice
+        invoice_request = request.env['invoice.request'].sudo().search(
+            [('invoice_id', '=', invoice_id)], limit=1)
+        if not invoice_request:
+            return request.render('ap_invoice_request.external_page_not_found')
+
+        report_action = request.env.ref('account.account_invoices')
+        pdf_content = request.env['ir.actions.report']._render_qweb_pdf(
+            report_action.id, [invoice_id])[0]
+
+        # Create response with proper headers for PDF download
+        pdfhttpheaders = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Length', len(pdf_content)),
+            ('Content-Disposition', 'attachment; filename=Invoice_%s.pdf' %
+             invoice.name.replace('/', '_'))
+        ]
+
+        return request.make_response(pdf_content, headers=pdfhttpheaders)

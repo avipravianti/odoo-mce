@@ -25,7 +25,8 @@ an invoice without needing to log in to Odoo.
     'data': [
         'security/ir.model.access.csv',
         'views/invoice_request_views.xml',
-        'views/external_sale_invoice_templates.xml'
+        'views/external_sale_invoice_templates.xml',
+        'views/report_templates.xml',
 
     ],
     'assets': {

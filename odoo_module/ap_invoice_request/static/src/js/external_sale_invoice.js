@@ -184,7 +184,7 @@ publicWidget.registry.externalSaleInvoice = publicWidget.Widget.extend({
     _onDownloadInvoice: function (ev) {
         ev.preventDefault();
         if (this.state.invoiceId) {
-            window.location.href = `/external/sale-invoice/download/${this.state.invoiceId}`;
+            window.open(`/external/sale-invoice/download/${this.state.invoiceId}`, "_blank");
         }
     },
 });

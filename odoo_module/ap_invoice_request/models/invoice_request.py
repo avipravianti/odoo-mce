@@ -23,6 +23,9 @@ class InvoiceRequest(models.Model):
     request_date = fields.Datetime('Request Date', default=fields.Datetime.now)
     processing_date = fields.Datetime('Processing Date')
 
+    invoice_count = fields.Integer(
+        compute='_compute_invoice_count', string='Invoice Count')
+
     @api.model
     def create_from_external_request(self, partner_id, sale_id):
         """
@@ -66,3 +69,43 @@ class InvoiceRequest(models.Model):
                 'state': 'pending',
             })
         return request.external_token
+
+    @api.depends('invoice_id')
+    def _compute_invoice_count(self):
+        for record in self:
+            record.invoice_count = 1 if record.invoice_id else 0
+
+    def action_view_invoice(self):
+        """
+        Open the related invoice
+        """
+        self.ensure_one()
+        if not self.invoice_id:
+            raise UserError(_("No invoice available for this request."))
+
+        return {
+            'name': _('Invoice'),
+            'view_mode': 'form',
+            'res_model': 'account.move',
+            'res_id': self.invoice_id.id,
+            'type': 'ir.actions.act_window',
+        }
+
+    def open_external_link(self):
+        """
+        Open the external invoice request form for this request
+        """
+        self.ensure_one()
+        if not self.external_token:
+            raise UserError(
+                _("This invoice request doesn't have an external token."))
+
+        base_url = self.env['ir.config_parameter'].sudo(
+        ).get_param('web.base.url')
+        url = f"{base_url}/external/sale-invoice/{self.external_token}"
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'new',
+        }

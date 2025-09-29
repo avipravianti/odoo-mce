@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=pgodoo16
+      - POSTGRES_PASSWORD=pgodoo16
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  odoo17:
+    image: odoo:17.0
+    depends_on:
+      - db
+    ports:
+      - "8095:8069"
+    volumes:
+      - ./odoo:/mnt/extra-addons/odoo
+      - ./addons:/mnt/extra-addons/addons
+      - ./odoo_module:/mnt/extra-addons/odoo_module
+      - ./config:/etc/odoo
+      - odoo-web-data:/var/lib/odoo
+    restart: always
+
+volumes:
+  odoo-db-data:
+  odoo-web-data:
