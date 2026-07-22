@@ -4,7 +4,7 @@
     'summary': 'Model Sekolah/Kelas, computed field, inherit res.partner, smart button',
     'author': 'Avi',
     'license': 'LGPL-3',
-    'depends': ['base'],
+    'depends': ['base', 'web'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

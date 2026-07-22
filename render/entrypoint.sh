@@ -34,6 +34,11 @@ ALREADY_INIT=$(PGPASSWORD="${ODOO_DB_PASSWORD}" psql -h "${ODOO_DB_HOST}" -p "${
 if [ -z "${ALREADY_INIT}" ]; then
   echo "[entrypoint] Fresh database — initializing ${MODULES_TO_INSTALL}"
   odoo -c /etc/odoo/odoo.conf -d "${ODOO_DB_NAME}" -i "base,${MODULES_TO_INSTALL}" --stop-after-init
+elif [ -n "${UPGRADE_MODULES}" ]; then
+  # Set UPGRADE_MODULES in Render env to apply code/manifest changes to an
+  # existing DB (e.g. new depends, updated views/assets), then unset it.
+  echo "[entrypoint] Upgrading ${UPGRADE_MODULES}"
+  odoo -c /etc/odoo/odoo.conf -d "${ODOO_DB_NAME}" -u "${UPGRADE_MODULES}" --stop-after-init
 fi
 
 echo "[entrypoint] Starting Odoo on port ${PORT}"
