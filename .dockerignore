@@ -1,0 +1,11 @@
+# The odoo:17.0 base image already ships Odoo core — don't upload vendored source.
+odoo/
+doc/
+setup/
+debian/
+.github/
+client_app/
+venv/
+*.pyc
+__pycache__/
+.git/

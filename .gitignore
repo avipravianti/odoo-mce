@@ -7,6 +7,9 @@ _build/
 !.github
 !.mailmap
 !.weblate.json
+!.dockerignore
+!.gitattributes
+!.env.example
 # compiled python files
 *.py[co]
 __pycache__/
