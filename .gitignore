@@ -24,6 +24,10 @@ odoo/addons/base/maintenance
 # window installation config file
 /odoo.conf
 
+# local secrets — never commit
+.env
+client_app/.env
+
 # generated for windows installer?
 install/win32/*.bat
 install/win32/meta.py

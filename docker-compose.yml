@@ -2,9 +2,9 @@ services:
   db:
     image: postgres:17
     environment:
-      - POSTGRES_USER=odoo16
-      - POSTGRES_PASSWORD=odoo16
-      - POSTGRES_DB=odoo16
+      - POSTGRES_USER=${DB_USER:-odoo}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?set DB_PASSWORD in .env}
+      - POSTGRES_DB=${DB_NAME:-odoo}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
@@ -19,17 +19,17 @@ services:
       - "8095:8069"
     environment:
       - HOST=db
-      - USER=odoo16
-      - PASSWORD=odoo16
-      - DB_NAME=odoo16
-      - DB_FILTER=odoo16
+      - USER=${DB_USER:-odoo}
+      - PASSWORD=${DB_PASSWORD:?set DB_PASSWORD in .env}
+      - DB_NAME=${DB_NAME:-odoo}
+      - DB_FILTER=${DB_NAME:-odoo}
     volumes:
       - ./odoo:/mnt/extra-addons/odoo
       - ./addons:/mnt/extra-addons/addons
       - ./odoo_module:/mnt/extra-addons/odoo_module
       - ./config:/etc/odoo
       - odoo-web-data:/var/lib/odoo
-    command: -- --database=odoo16 --db_host=db --db_user=odoo16 --db_password=odoo16 --init=base
+    command: -- --database=${DB_NAME:-odoo} --db_host=db --db_user=${DB_USER:-odoo} --db_password=${DB_PASSWORD} --init=base
     restart: always
 
 volumes:
