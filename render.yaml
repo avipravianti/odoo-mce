@@ -5,7 +5,7 @@ services:
     name: odoo-mce
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: standard          # Odoo needs RAM; free/starter will OOM. Bump if slow.
+    plan: free              # 512MB RAM. Odoo is tight here — may OOM on heavy pages. Bump to standard if it crashes.
     healthCheckPath: /web/health
     envVars:
       - key: ODOO_DB_HOST
@@ -37,5 +37,5 @@ services:
 
 databases:
   - name: odoo-mce-db
-    plan: basic-256mb        # bump for real load
+    plan: free               # free Postgres EXPIRES 30 days after creation — back up or upgrade before then
     postgresMajorVersion: "16"
