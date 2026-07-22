@@ -1,0 +1,41 @@
+# Render Blueprint: Odoo 17 web service + managed Postgres.
+# Deploy: push to GitHub, then Render Dashboard → New → Blueprint → pick this repo.
+services:
+  - type: web
+    name: odoo-mce
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: standard          # Odoo needs RAM; free/starter will OOM. Bump if slow.
+    healthCheckPath: /web/health
+    envVars:
+      - key: ODOO_DB_HOST
+        fromDatabase:
+          name: odoo-mce-db
+          property: host
+      - key: ODOO_DB_PORT
+        fromDatabase:
+          name: odoo-mce-db
+          property: port
+      - key: ODOO_DB_USER
+        fromDatabase:
+          name: odoo-mce-db
+          property: user
+      - key: ODOO_DB_PASSWORD
+        fromDatabase:
+          name: odoo-mce-db
+          property: password
+      - key: ODOO_DB_NAME
+        fromDatabase:
+          name: odoo-mce-db
+          property: database
+      - key: ODOO_ADMIN_PASSWD
+        generateValue: true   # master password; view it in the Render dashboard
+      - key: MODULES_TO_INSTALL
+        value: dev_sekolah
+      - key: ODOO_WORKERS
+        value: "0"
+
+databases:
+  - name: odoo-mce-db
+    plan: basic-256mb        # bump for real load
+    postgresMajorVersion: "16"
