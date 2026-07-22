@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_guru" model="ir.actions.act_window">
+        <field name="name">Daftar Guru</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_guru', '=', True)]</field>
+    </record>
+
+    <record id="view_dev_sekolah_form_inherit" model="ir.ui.view">
+        <field name="name">dev.sekolah.form.inherit.smartbutton</field>
+        <field name="model">dev.sekolah</field>
+        <field name="inherit_id" ref="view_dev_sekolah_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="%(action_guru)d"
+                            type="action"
+                            class="oe_stat_button"
+                            icon="fa-users">
+                        <span class="o_stat_text">Lihat Guru</span>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_inherit_guru" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.guru</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='function']" position="after">
+                <field name="is_guru"/>
+                <field name="bidang_studi" invisible="not is_guru"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

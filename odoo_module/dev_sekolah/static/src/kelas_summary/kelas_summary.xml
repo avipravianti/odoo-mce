@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="dev_sekolah.KelasSummaryOWL">
+        <div class="o_kelas_summary p-2 border rounded bg-light">
+            <div>
+                <strong>Nama Kelas:</strong>
+                <span t-esc="namaKelas"/>
+            </div>
+            <div>
+                <strong>Total Kelas di Sekolah:</strong>
+                <span t-esc="totalKelasSekolah"/>
+            </div>
+        </div>
+    </t>
+
+</templates>

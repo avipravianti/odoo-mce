@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_dev_sekolah_form" model="ir.ui.view">
+        <field name="name">dev.sekolah.form</field>
+        <field name="model">dev.sekolah</field>
+        <field name="arch" type="xml">
+            <form string="Sekolah">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="alamat"/>
+                        <field name="jumlah_kelas"/>
+                    </group>
+                    <notebook>
+                        <page string="Daftar Kelas">
+                            <field name="kelas_ids" widget="one2many">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="wali_kelas_id"
+                                           domain="[('is_guru', '=', True)]"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dev_sekolah_list" model="ir.ui.view">
+        <field name="name">dev.sekolah.list</field>
+        <field name="model">dev.sekolah</field>
+        <field name="arch" type="xml">
+            <tree string="Sekolah">
+                <field name="name"/>
+                <field name="alamat"/>
+                <field name="jumlah_kelas"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Soal 4.2 & 4.4: Form View Kelas dengan widget OWL.
+         Field yang dibutuhkan widget dideklarasikan agar tersedia di frontend. -->
+    <record id="view_dev_sekolah_kelas_form" model="ir.ui.view">
+        <field name="name">dev.sekolah.kelas.form</field>
+        <field name="model">dev.sekolah.kelas</field>
+        <field name="arch" type="xml">
+            <form string="Kelas">
+                <sheet>
+                    <group>
+                        <field name="name" widget="kelas_summary_owl"/>
+                        <field name="sekolah_id"/>
+                        <field name="wali_kelas_id"
+                               domain="[('is_guru', '=', True)]"/>
+                        <!-- Soal 4.4: field computed sekolah diekspos untuk widget -->
+                        <field name="sekolah_jumlah_kelas"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dev_sekolah" model="ir.actions.act_window">
+        <field name="name">Sekolah</field>
+        <field name="res_model">dev.sekolah</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_dev_sekolah_kelas" model="ir.actions.act_window">
+        <field name="name">Kelas</field>
+        <field name="res_model">dev.sekolah.kelas</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_dev_sekolah_root" name="Dev Sekolah"/>
+    <menuitem id="menu_dev_sekolah"
+              name="Sekolah"
+              parent="menu_dev_sekolah_root"
+              action="action_dev_sekolah"/>
+    <menuitem id="menu_dev_sekolah_kelas"
+              name="Kelas"
+              parent="menu_dev_sekolah_root"
+              action="action_dev_sekolah_kelas"/>
+
+</odoo>
